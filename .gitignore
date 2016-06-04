@@ -13,8 +13,12 @@
 *.dylib
 *.dll
 
-# Fortran module files
-*.mod
+# Eclipse files #
+.settings
+.cproject
+.project
+Default/*
+data/*
 
 # Compiled Static libraries
 *.lai
