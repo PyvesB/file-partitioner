@@ -1,2 +1,23 @@
 # FilePartitioner
-A simple C++ program to perform line-based partitioning of files.
+A simple C++ program to perform line-based partitioning of files. Nothing fancy, but does the job just fine and supports several options detailed below! You must compile the source with the *-std=c++11* flag; the program was tested on Linux with GCC 5.4 and Windows with MinGW 5.3.
+
+### Program parameters
+Once compiled, the input of the program must have the following form: 
+```
+file-location destination-folder partitioning-mode number-of-partitions
+```
+
+* *file-location*: location of the file to partition. Any line-based text file will work (.txt files, .csv files, etc.).
+* *destination-folder*: must point to an existing folder in your file system; the output files will have the same name as the input one, with an additional suffix corresponding to the partition number.
+* *partitioning-mode*
+  * *rr* for round-robin partitioning, each partition receives a line from the input file in turn.
+  * *ln* for linear partitioning, each partition receives one chunk of the input file.
+   * *rd* for random partitioning, each partition receives randomly selected lines from the input file (will most likely not give equally sized partitions).
+* *number-of-partitions*: number of partitions to create from the input file.
+
+For instance, on Linux:
+```
+./FilePartitioner data/myFile.csv data/ rr 8
+```
+
+Have fun partitioning your files!
