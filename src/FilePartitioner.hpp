@@ -10,8 +10,10 @@
 #ifndef FILEPARTITIONER_HPP_
 #define FILEPARTITIONER_HPP_
 
+#include <ctime>
 #include <fstream>
-#include <time.h>
+#include <random>
+#include <vector>
 
 /**
  * Partition files in a round-robin manner: each partition receives a line from the input file in turn.
@@ -24,8 +26,8 @@ void RoundRobinPartition(const std::string& filePath,
 	/* Extract name of file to process. */
 	std::string nameOfFile = filePath.substr(nameDelimiterIndex + 1);
 
-	/* Array containing the partition output files. */
-	std::ofstream* outputFiles = new std::ofstream[numOfPartitions];
+	/* Vector containing the partition output files. */
+	std::vector<std::ofstream> outputFiles(numOfPartitions);
 	/* Initialise the output files. */
 	for (uint32_t partition = 0; partition < numOfPartitions; ++partition)
 	{
@@ -47,13 +49,6 @@ void RoundRobinPartition(const std::string& filePath,
 		/* Move on to next partition in a round-robin way. */
 		partition = (partition + 1) % numOfPartitions;
 	}
-
-	/* Close the partition output files. */
-	for (uint32_t partition = 0; partition < numOfPartitions; ++partition)
-		outputFiles[partition].close();
-
-	/* Clean array. */
-	delete[] outputFiles;
 }
 
 /**
@@ -68,8 +63,8 @@ void LinearPartition(const std::string& filePath, const std::string& destFolder,
 	/* Extract name of file to process. */
 	std::string nameOfFile = filePath.substr(nameDelimiterIndex + 1);
 
-	/* Array containing the partition output files. */
-	std::ofstream* outputFiles = new std::ofstream[numOfPartitions];
+	/* Vector containing the partition output files. */
+	std::vector<std::ofstream> outputFiles(numOfPartitions);
 	/* Initialise the output files. */
 	for (uint32_t partition = 0; partition < numOfPartitions; ++partition)
 	{
@@ -114,13 +109,6 @@ void LinearPartition(const std::string& filePath, const std::string& destFolder,
 			++partition;
 		}
 	}
-
-	/* Close the partition output files. */
-	for (uint32_t partition = 0; partition < numOfPartitions; ++partition)
-		outputFiles[partition].close();
-
-	/* Clean array. */
-	delete[] outputFiles;
 }
 
 /**
@@ -135,8 +123,8 @@ void RandomPartition(const std::string& filePath, const std::string& destFolder,
 	/* Extract name of file to process. */
 	std::string nameOfFile = filePath.substr(nameDelimiterIndex + 1);
 
-	/* Array containing the partition output files. */
-	std::ofstream* outputFiles = new std::ofstream[numOfPartitions];
+	/* Vector containing the partition output files. */
+	std::vector<std::ofstream> outputFiles(numOfPartitions);
 	/* Initialise the output files. */
 	for (uint32_t partition = 0; partition < numOfPartitions; ++partition)
 	{
@@ -145,8 +133,10 @@ void RandomPartition(const std::string& filePath, const std::string& destFolder,
 						+ std::to_string(partition));
 	}
 
-	/* Initialise pseudo-random number generator. */
-	srand(time(NULL));
+	/* Initialise number distribution. */
+	std::uniform_int_distribution<uint32_t> dist(0, numOfPartitions - 1);
+	/* Initialise random number generator with time based seed. */
+	std::mt19937 rng(time(NULL));
 
 	/* File to process. */
 	std::ifstream input(filePath);
@@ -155,15 +145,8 @@ void RandomPartition(const std::string& filePath, const std::string& destFolder,
 	while (std::getline(input, line))
 	{
 		/* Output line. */
-		outputFiles[rand() % numOfPartitions] << line << std::endl;
+		outputFiles[dist(rng)] << line << std::endl;
 	}
-
-	/* Close the partition output files. */
-	for (uint32_t partition = 0; partition < numOfPartitions; ++partition)
-		outputFiles[partition].close();
-
-	/* Clean array. */
-	delete[] outputFiles;
 }
 
 #endif /* FILEPARTITIONER_HPP_ */
