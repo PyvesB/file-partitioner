@@ -1,5 +1,10 @@
 # FilePartitioner
-A simple C++ program to perform line-based partitioning of files. Nothing fancy, but does the job just fine and supports several options detailed below! You must compile the source with the *-std=c++11* flag; the program was tested on Linux with GCC 5.4 and Windows with MinGW 5.3.
+A simple C++ program to perform line-based partitioning of files. Nothing fancy, but does the job just fine and supports several options detailed below! The header file *FilePartitioner.hpp* contains all the partitioning functions, the source file *main.cpp* is just a small wrapper to parse command line input. The program was tested on Linux with GCC 5.4 and Windows with MinGW 5.3.
+
+You can compile the program with a command similar to the following:
+```
+g++ -std=c++11 -O3 -o FilePartitioner src/main.cpp src/FilePartitioner.hpp
+```
 
 ### Program parameters
 Once compiled, the input of the program must have the following form: 
